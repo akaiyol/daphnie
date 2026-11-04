@@ -1,0 +1,4 @@
+interface:
+  display_name: "Daphnie"
+  short_description: "Daphnie mode routing with focused guidance"
+  default_prompt: "Use $daphnie to help with my current request."

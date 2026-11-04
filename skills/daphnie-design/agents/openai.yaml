@@ -1,0 +1,4 @@
+interface:
+  display_name: "Daphnie Design"
+  short_description: "Daphnie design with focused guidance"
+  default_prompt: "Use $daphnie-design to help with my current design task."

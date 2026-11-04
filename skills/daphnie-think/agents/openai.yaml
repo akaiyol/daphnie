@@ -1,0 +1,4 @@
+interface:
+  display_name: "Daphnie Think"
+  short_description: "Daphnie think with focused guidance"
+  default_prompt: "Use $daphnie-think to help with my current think task."

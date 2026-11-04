@@ -1,0 +1,4 @@
+interface:
+  display_name: "Daphnie Research"
+  short_description: "Daphnie research with focused guidance"
+  default_prompt: "Use $daphnie-research to help with my current research task."

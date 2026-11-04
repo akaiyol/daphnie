@@ -1,0 +1,4 @@
+interface:
+  display_name: "Daphnie Assistant"
+  short_description: "Daphnie assistant with focused guidance"
+  default_prompt: "Use $daphnie-assistant to help with my current assistant task."

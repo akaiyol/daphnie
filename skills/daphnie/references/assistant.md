@@ -1,0 +1,1 @@
+../../../modes/assistant.md
