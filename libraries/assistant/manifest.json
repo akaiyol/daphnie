@@ -1,0 +1,15 @@
+{
+  "flavour": "assistant",
+  "library_version": "1.0.0",
+  "skills": [
+    {
+      "id": "task-recovery",
+      "version": "1.0.0",
+      "path": "task-recovery.md",
+      "status": "owner-adopted",
+      "validation": "behavior-unvalidated",
+      "origin": "Initial procedure derived from the existing mode contract; no performance gain is claimed.",
+      "release_record": null
+    }
+  ]
+}

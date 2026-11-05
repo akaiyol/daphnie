@@ -1,0 +1,15 @@
+{
+  "flavour": "design",
+  "library_version": "1.0.0",
+  "skills": [
+    {
+      "id": "reference-review",
+      "version": "1.0.0",
+      "path": "reference-review.md",
+      "status": "owner-adopted",
+      "validation": "behavior-unvalidated",
+      "origin": "Initial procedure derived from the existing mode contract; no performance gain is claimed.",
+      "release_record": null
+    }
+  ]
+}
