@@ -113,3 +113,7 @@ Each library manifest lists active procedure IDs and versions. Initial procedure
 The public repository contains sanitized contracts, procedures, protocols and synthetic evaluator tests. Real task histories, private manifests, acceptance datasets and reports stay in an explicitly configured private store. Keep acceptance tasks, scoring rules, credentials and promotion authority outside the learner's writable scope in the eventual host. Git history and Markdown labels do not enforce those boundaries.
 
 See [evaluation protocol](evaluation/PROTOCOL.md), [record contracts](evaluation/RECORDS.md), and [behavior probes](tests/scenarios.md).
+
+## Runtime adoption evidence
+
+The [Ultimate assessment](research/2026-11-05-ultimate-validation.md) records source verification, focused upstream tests, independent configuration probes and unresolved Daphnie transfer requirements. These mechanisms are engineering references, not active dependencies or validated Daphnie runtime features. Research and open-source attribution are maintained in the [README credits](README.md#credits-and-design-influences).
