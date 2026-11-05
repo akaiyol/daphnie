@@ -30,3 +30,7 @@ Required fields: ID, originating flavour/project, information owner, confidentia
 ## Release record
 
 Required fields: release ID/date, candidate and exact diff/hash, target library and skill versions, accepted report references, trial evidence, owner/maintainer authorization, permitted scope, dependency versions, active retrieval configuration, compatible memory state, prior release and rollback instructions. No record is approval merely because Daphnie wrote an approver name. The host must validate authority externally.
+
+## Local controller records
+
+The [controller](CONTROLLER.md) stores hash-linked events, content-addressed manifests, scoped observations/bundles, candidate workspaces, frozen development plans, attempts, immutable comparisons and manual activation history in a private SQLite store. These are development records; they do not fulfill the protected acceptance and externally authorized release contracts above. A manual adoption is explicitly `behavior_verified: false`. Process interruption leaves an incomplete attempt; recovery never replays external actions.

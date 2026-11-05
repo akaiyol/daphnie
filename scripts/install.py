@@ -12,12 +12,29 @@ NAMES = ('daphnie', 'daphnie-design', 'daphnie-think', 'daphnie-assistant', 'dap
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--destination', type=Path, default=Path.home() / '.codex/skills')
+    parser.add_argument('--release-state', type=Path,
+                        help='Opt in to a controller-managed current release; original links are never replaced')
     args = parser.parse_args()
     destination = args.destination.expanduser().absolute()
+    source_root = ROOT
+    if args.release_state:
+        from control.store import Store
+        state = args.release_state.expanduser().resolve()
+        if not (state / 'ledger.sqlite').is_file():
+            print('controller state does not exist', file=sys.stderr)
+            return 1
+        store = Store(state)
+        try:
+            if not store.reconcile_active():
+                print('no active controller release', file=sys.stderr)
+                return 1
+            source_root = state / 'current'
+        finally:
+            store.close()
     plans = []
     conflicts = []
     for name in NAMES:
-        source = ROOT / 'skills' / name
+        source = source_root / 'skills' / name
         target = destination / name
         if not (source / 'SKILL.md').is_file():
             conflicts.append(f'missing source: {source}')

@@ -1,6 +1,6 @@
 # Change ledger and longitudinal benchmark
 
-Status: proposed design, 2026-11-05. This document specifies the next implementation; it does not add a running logger, task runner or performance history. Existing `scripts/evaluate.py` is an offline reviewer of supplied scores. The user selected the current Codex skills as the first live execution environment.
+Status: target design with a functional local v1, 2026-11-05. [Controller operations](CONTROLLER.md) document the implemented subset: explicit snapshots, scoped observations and grouping, separate candidates, frozen development plans, subprocess execution, artifact scoring, private history, exact Git imports and manual adoption/rollback. Automatic verified promotion is blocked. Existing `scripts/evaluate.py` remains an offline reviewer of supplied acceptance records.
 
 ## Objective and scope
 
@@ -86,6 +86,10 @@ Classify each change before selecting tests. Local skill changes run the target 
 
 Changes queue evaluation jobs; they do not authorize unlimited model spending or continuous monitoring. An owner-approved run policy sets permitted triggers, host, maximum cost, concurrency and stopping conditions. Initially, run explicitly. Scheduling, unattended evaluation and external service access require their own configured authorization.
 
+## Implementation boundary
+
+The v1 controller is explicit and local. It has no background watcher, semantic lesson author, protected acceptance partition, calibrated subjective evaluator, external approval authority, memory deletion/migration engine or automatic trial monitoring. Consolidation groups evidence; it does not verify a lesson. Fresh directories and Codex settings reduce ambient context but do not establish OS-level isolation. Release rollback restores package files only and preserves newer observations. Development reports cannot authorize learned releases. The remaining sections describe the full target unless specifically covered by [controller operations](CONTROLLER.md).
+
 ## Actual benchmark execution
 
 1. Freeze the plan and both system snapshots. Reject comparability claims if the task/scorer/model/tool/environment versions differ outside the declared treatment. Model-provider aliases that change without a pin leave a reproducibility limitation in the report.
@@ -110,7 +114,7 @@ Use fresh noninteractive Codex sessions to exercise the same Daphnie skill packa
 - Keep controller logs, score scripts, policies and acceptance answers outside the agent's accessible execution environment. Do not embed answer keys in prompts or expose scoring scripts with expected answers alongside fixtures. The controller scores after the agent session closes.
 - Before live runs, require an owner-approved run ceiling and stopping policy. Use existing supported sign-in; never copy tokens into snapshots or logs. Stop and report unavailable authentication, unsupported configuration or absent required capabilities rather than silently changing provider, model or permissions.
 
-The first functional milestone is one real paired development comparison with fresh sessions and observable artifact checks. It is followed by all-flavour calibration and verified acceptance isolation; it is not immediately a protected release benchmark. See official OpenAI documentation for [noninteractive execution](https://learn.chatgpt.com/docs/non-interactive-mode), [skill discovery](https://learn.chatgpt.com/docs/build-skills) and [configuration](https://learn.chatgpt.com/docs/config-file/config-reference). Documentation and local CLI capabilities were inspected; this adapter remains unimplemented.
+The first functional milestone is one real paired development comparison with fresh sessions and observable artifact checks. It is followed by all-flavour calibration and verified acceptance isolation; it is not immediately a protected release benchmark. See official OpenAI documentation for [noninteractive execution](https://learn.chatgpt.com/docs/non-interactive-mode), [skill discovery](https://learn.chatgpt.com/docs/build-skills) and [configuration](https://learn.chatgpt.com/docs/config-file/config-reference). The adapter is implemented. Two authorized live attempts passed one synthetic assistant task; this establishes a narrow execution smoke test, not acceptance isolation or improvement. See the [validation record](../research/2026-11-05-controller-validation.md).
 
 ## What is benchmarked
 
@@ -172,4 +176,4 @@ The first useful deliverable is an end-to-end measured comparison with traceable
 
 ## Evidence and attribution
 
-This is a Daphnie-specific proposed design, not a research-demonstrated combined system. The [existing evaluation protocol](PROTOCOL.md) remains the policy foundation. [Ultimate mechanism verification](../research/2026-11-05-ultimate-validation.md) informs durable execution, capability configuration, traceability and controlled release; its tests do not validate this design. [SQLite's transaction documentation](https://www.sqlite.org/transactional.html) supports the local ledger choice, not exactly-once external actions. [SkillsBench](https://arxiv.org/abs/2602.12670v4) motivates artifact-backed paired comparisons; [experience faithfulness research](https://arxiv.org/abs/2601.22436v3) motivates selective-use and adverse-memory tests. See [README credits](../README.md#credits-and-design-influences) for authors and broader influences.
+This is a Daphnie-specific target design with a partial implementation, not a research-demonstrated combined system. The [existing evaluation protocol](PROTOCOL.md) remains the policy foundation. [Ultimate mechanism verification](../research/2026-11-05-ultimate-validation.md) informs durable execution, capability configuration, traceability and controlled release; its tests do not validate this design. [SQLite's transaction documentation](https://www.sqlite.org/transactional.html) supports the local ledger choice, not exactly-once external actions. [SkillsBench](https://arxiv.org/abs/2602.12670v4) motivates artifact-backed paired comparisons; [experience faithfulness research](https://arxiv.org/abs/2601.22436v3) motivates selective-use and adverse-memory tests. See [README credits](../README.md#credits-and-design-influences) for authors and broader influences.

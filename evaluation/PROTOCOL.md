@@ -4,7 +4,7 @@
 
 This protocol governs proposed learning. `scripts/evaluate.py` reviews paired outcome records and produces an offline eligibility report; it does not invoke a model, verify the truth of submitted scores, grant authorization or activate a release. `tests/test_evaluate.py` checks the review logic with synthetic records. No live learning, personality preservation or host isolation has yet been demonstrated.
 
-The [change ledger and longitudinal benchmark design](BENCHMARK_SYSTEM.md) specifies the proposed capture, execution, scoring and version-history system needed to turn this protocol into measured comparisons. That runner is not implemented yet.
+The [local controller](CONTROLLER.md) implements capture, development execution, artifact scoring and version history. Its reports always block verified release because protected acceptance, evaluator calibration, flavour fidelity, general privacy and actual skill loading are unresolved. Its explicit owner-adoption command is a behavior-unverified operational action, not a learned release under this protocol. The [target benchmark design](BENCHMARK_SYSTEM.md) remains the full requirement.
 
 ## Before evaluation
 

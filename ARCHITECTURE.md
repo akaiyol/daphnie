@@ -1,6 +1,6 @@
 # Daphnie architecture
 
-Status: instruction package and offline evaluation tooling. Host-enforced isolation, automatic execution, protected evaluation storage, and a live promotion controller are not implemented by this repository. Installing skills does not create those capabilities.
+Status: instruction package, offline reviewer and an explicit local controller for capture, development execution, comparison and manual adoption. Host-enforced isolation, autonomous scheduling, protected acceptance storage and verified promotion are not implemented. Installing skills does not start the controller.
 
 ## Ownership and boundaries
 
@@ -118,4 +118,4 @@ See [evaluation protocol](evaluation/PROTOCOL.md), [record contracts](evaluation
 
 The [Ultimate assessment](research/2026-11-05-ultimate-validation.md) records source verification, focused upstream tests, independent configuration probes and unresolved Daphnie transfer requirements. These mechanisms are engineering references, not active dependencies or validated Daphnie runtime features. Research and open-source attribution are maintained in the [README credits](README.md#credits-and-design-influences).
 
-The proposed [change ledger and longitudinal benchmark](evaluation/BENCHMARK_SYSTEM.md) connects exact snapshots to actual task execution, scored artifacts, per-flavour trends and activation history. Its first live adapter targets the current Codex skills; the runner remains to be implemented.
+The [local controller](evaluation/CONTROLLER.md) implements registered-root snapshots, scoped evidence bundles, separate candidates, frozen plans, fresh Codex attempts, deterministic artifact scoring and explicit release history. Content hashes detect accidental changes; the same OS account can alter the store. Manual adoption is labeled behavior-unverified and does not satisfy learned-release policy. The [benchmark design](evaluation/BENCHMARK_SYSTEM.md) retains the requirements for protected acceptance and verified promotion.

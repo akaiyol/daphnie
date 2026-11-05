@@ -8,7 +8,7 @@ Invoke `$daphnie` to route a request, or use `$daphnie-design`, `$daphnie-think`
 
 ## Architecture and learning
 
-High-level target architecture; the runtime and enforcement components remain to be built. Solid arrows show work and learning; dotted arrows show governance.
+High-level target architecture. The local controller implements explicit capture, development comparisons and manual adoption; enforced context isolation and verified promotion remain future work. Solid arrows show work and learning; dotted arrows show governance.
 
 ```mermaid
 flowchart TB
@@ -60,13 +60,13 @@ The [architecture](ARCHITECTURE.md) defines personality/project separation, priv
 
 Run `python3 scripts/check.py` and `python3 -m unittest discover -s tests -p 'test_*.py'`. Review paired procedural outcomes with `python3 scripts/evaluate.py INPUT.json --output REPORT.json`, using private paths for actual evidence. The report checks supplied records; it does not run an agent or activate changes.
 
-The proposed [change ledger and longitudinal benchmark](evaluation/BENCHMARK_SYSTEM.md) connects exact changes to isolated task runs, artifact-backed scores, per-flavour trends, trial decisions and rollback. It is a design specification; the live runner and performance history remain to be built.
+The [local controller](evaluation/CONTROLLER.md) now records scoped observations and exact file snapshots, groups proposed evidence, creates separate candidate workspaces, runs paired development tasks, scores artifacts and preserves comparison history. Updates are fetched and imported explicitly; activation and rollback require an explicit operator decision. See the [target design and implementation boundary](evaluation/BENCHMARK_SYSTEM.md) and [validation record](research/2026-11-05-controller-validation.md).
 
 ## Verification limits
 
-The package checker checks structure and library metadata. Synthetic unit tests check offline evaluation decisions; neither establishes task quality, personality preservation or resistance to poisoning. [Behavior probes](tests/scenarios.md) require observed outcomes. No learned update or live learning cycle has been validated.
+The package checker checks structure and library metadata. Synthetic unit tests check controller and offline evaluation decisions; neither establishes task quality, personality preservation or resistance to poisoning. [Behavior probes](tests/scenarios.md) require observed outcomes. Two live attempts passed one synthetic assistant task with no measured difference. This smoke test does not validate learning or improvement.
 
-This package provides no autonomous runtime, enforced access isolation, protected acceptance store, release controller, model training, universal chat access or sleep/wake guarantee. Those require a separately configured host. Reading schedules require an explicit request and actual delivery verification.
+The controller is manually invoked. Ordinary Daphnie calls do not automatically log, benchmark, pull updates or activate changes. It provides no autonomous scheduler, enforced access isolation, protected acceptance store, verified promotion, model training, universal chat access or sleep/wake guarantee. Those require a separately configured host. Reading schedules require an explicit request and actual delivery verification.
 
 ## Credits and design influences
 
