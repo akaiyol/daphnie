@@ -60,6 +60,8 @@ The [architecture](ARCHITECTURE.md) defines personality/project separation, priv
 
 Run `python3 scripts/check.py` and `python3 -m unittest discover -s tests -p 'test_*.py'`. Review paired procedural outcomes with `python3 scripts/evaluate.py INPUT.json --output REPORT.json`, using private paths for actual evidence. The report checks supplied records; it does not run an agent or activate changes.
 
+The proposed [change ledger and longitudinal benchmark](evaluation/BENCHMARK_SYSTEM.md) connects exact changes to isolated task runs, artifact-backed scores, per-flavour trends, trial decisions and rollback. It is a design specification; the live runner and performance history remain to be built.
+
 ## Verification limits
 
 The package checker checks structure and library metadata. Synthetic unit tests check offline evaluation decisions; neither establishes task quality, personality preservation or resistance to poisoning. [Behavior probes](tests/scenarios.md) require observed outcomes. No learned update or live learning cycle has been validated.

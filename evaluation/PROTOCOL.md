@@ -4,6 +4,8 @@
 
 This protocol governs proposed learning. `scripts/evaluate.py` reviews paired outcome records and produces an offline eligibility report; it does not invoke a model, verify the truth of submitted scores, grant authorization or activate a release. `tests/test_evaluate.py` checks the review logic with synthetic records. No live learning, personality preservation or host isolation has yet been demonstrated.
 
+The [change ledger and longitudinal benchmark design](BENCHMARK_SYSTEM.md) specifies the proposed capture, execution, scoring and version-history system needed to turn this protocol into measured comparisons. That runner is not implemented yet.
+
 ## Before evaluation
 
 1. Record the failure evidence, candidate type, target flavour/library, applicable projects, exact diff, baseline version, predicted benefit, failure modes and rollback state.
