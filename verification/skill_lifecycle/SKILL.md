@@ -23,7 +23,7 @@ Review every content-integrity counterexample and concrete replay. External pack
 
 ## Keep model and implementation aligned
 
-[Coverage](coverage.json) maps transitions to actual functions and pins their exact source fingerprints. There is no Git checkout in the working source, so `sync_commit` is null rather than fabricated. Move to a real commit pin when the work is committed, retaining the fingerprints.
+[Coverage](coverage.json) maps transitions to actual functions and pins their exact source fingerprints. `sync_commit` identifies the committed implementation snapshot; retain the exact fingerprints when updating this pin. Later documentation commits do not change the pinned implementation.
 
 If covered functions change, review their guards, transaction boundaries, crash points, externally writable state and returned labels before updating the pins. The runner refuses changed fingerprints. Never auto-repin to make the check run, weaken an invariant to get green, or add an imagined verified-release edge absent from the implementation.
 

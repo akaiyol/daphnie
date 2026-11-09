@@ -1,8 +1,8 @@
 {
   "reviewed": "2026-11-08",
   "revision": "procedure-identity-and-envelope-boundary-repairs",
-  "sync_commit": null,
-  "provenance": "Working directory is not a Git checkout. Exact function and covered-module fingerprints identify reviewed code; no fictitious commit pin.",
+  "sync_commit": "e9a741894431b53c29fb540162bd6dbf67cc8392",
+  "provenance": "The sync_commit identifies the committed implementation snapshot. Exact function and covered-module fingerprints remain the source/model synchronization checks.",
   "functions": {
     "scripts/control/store.py:<module>": "f1f4314956c461b39e41be1a1a7ea868506bc147f49d46d407fbb764937eb6a9",
     "scripts/control/store.py:Store.transaction": "41d68a37cb962349e7121b1028ba32e625c124182d8b0b376a8642b7bc7d6f9b",

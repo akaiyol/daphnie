@@ -10,7 +10,7 @@ Used TLA+ tools release v1.7.4 (TLC 2.19) with the existing OpenJDK 24.0.2 runti
 
 The [model and verification skill](../verification/skill_lifecycle/README.md) cover one baseline and one candidate, prepared packages, content validity, confirmation, rollback history, report labels, validation/transaction/pointer stages and crash/recovery actions. Checks are exhaustive over each finite reachable model graph, subject to TLC fingerprinting. They are not an unbounded proof or a proof that every implementation behavior is represented.
 
-The source directory is not a Git checkout. [Coverage](../verification/skill_lifecycle/coverage.json) therefore pins actual source-function fingerprints and explicitly leaves `sync_commit` null. Adding a later source commit pin must not replace source/model correspondence review.
+At the initial review, the source directory was not a Git checkout, so coverage recorded actual source-function fingerprints with a null `sync_commit`. [Current coverage](../verification/skill_lifecycle/coverage.json) also pins the committed implementation snapshot and retains those fingerprints. A commit pin does not replace source/model correspondence review.
 
 ## Results
 
