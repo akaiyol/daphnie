@@ -1,0 +1,33 @@
+--- a/libraries/design/reference-review.md
++++ b/libraries/design/reference-review.md
+@@ -1,3 +1,7 @@
+ # Reference review
+ 
+-Compare the rendered artifact with the relevant reference at the intended size and important states. Identify the highest-impact observed mismatch in hierarchy, legibility, interaction or visual coherence. Revise against that evidence and inspect the result. Artistic acceptance and device validation remain distinct from implementation checks.
++Compare a rendered whole artifact with its relevant reference at the intended size and important states. Choose an early view that can discriminate the main visual hypothesis before broad validation or detail work. Preserve the same renderer, viewport and reference identity where possible; qualify differences and unavailable browser/device evidence.
++
++Identify the highest-impact observed mismatch in hierarchy, legibility, interaction or visual coherence. State what visible change would improve it and what result would reject the approach. Revise against that evidence and inspect the result. Preserve demonstrated gains; after repeated rejection of the same mechanism, require a changed premise rather than renaming or cosmetically tuning it.
++
++A local detail gain remains local until the whole artifact and relevant variants support the broader claim. Passing geometry, hashes or structural checks does not establish artistic quality. Run affected integrity checks before retaining a promising change. Keep artistic acceptance, device validation, efficiency and implementation evidence distinct; unresolved criteria remain unresolved.
+--- a/libraries/design/manifest.json
++++ b/libraries/design/manifest.json
+@@ -1,14 +1,14 @@
+ {
+   "flavour": "design",
+-  "library_version": "1.0.0",
++  "library_version": "1.0.1",
+   "skills": [
+     {
+       "id": "reference-review",
+-      "version": "1.0.0",
++      "version": "1.0.1",
+       "path": "reference-review.md",
+-      "status": "owner-adopted",
+-      "validation": "behavior-unvalidated",
+-      "origin": "Initial procedure derived from the existing mode contract; no performance gain is claimed.",
++      "status": "proposed",
++      "validation": "pending-evaluation",
++      "origin": "Proposed scoped transfer from reviewed project evidence; inactive until evaluation and authorized release.",
+       "release_record": null
+     }
+   ]

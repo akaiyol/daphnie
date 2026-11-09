@@ -1,6 +1,7 @@
 """Transactional private ledger, content-addressed snapshots and explicit releases."""
 import contextlib
 import hashlib
+import fcntl
 import json
 import os
 from pathlib import Path
@@ -50,7 +51,7 @@ class Store:
             raise ValueError('controller state requires a dedicated directory')
         self.home.mkdir(parents=True, exist_ok=True, mode=0o700)
         os.chmod(self.home, 0o700)
-        for name in ('blobs', 'packages', 'attempts'):
+        for name in ('blobs', 'packages', 'attempts', 'deployments'):
             (self.home / name).mkdir(exist_ok=True, mode=0o700)
         self.db = sqlite3.connect(str(self.home / 'ledger.sqlite'), timeout=15)
         self.db.row_factory = sqlite3.Row
@@ -81,6 +82,8 @@ class Store:
           CREATE TABLE IF NOT EXISTS releases (id TEXT PRIMARY KEY, snapshot TEXT NOT NULL REFERENCES snapshots(id),
             data TEXT NOT NULL);
           CREATE TABLE IF NOT EXISTS active (slot INTEGER PRIMARY KEY CHECK(slot=1), release TEXT REFERENCES releases(id));
+          CREATE TABLE IF NOT EXISTS consumed_grants (id TEXT PRIMARY KEY, data TEXT NOT NULL);
+          CREATE TABLE IF NOT EXISTS activation_intents (id TEXT PRIMARY KEY, data TEXT NOT NULL, status TEXT NOT NULL);
           CREATE TABLE IF NOT EXISTS activations (seq INTEGER PRIMARY KEY AUTOINCREMENT, release TEXT NOT NULL,
             previous TEXT, reason TEXT NOT NULL);
         ''')
@@ -477,36 +480,162 @@ class Store:
             if raw is None or digest(raw) != entry['blob']:
                 raise ValueError('release package changed: ' + entry['path'])
 
-    def reconcile_active(self):
-        row = self.db.execute('SELECT release FROM active WHERE slot=1').fetchone()
-        if not row:
-            return None
-        rid = row[0]
-        self.validate_package(rid, self.home / 'packages' / rid)
-        link, pending = self.home / 'current', self.home / ('.current-' + uuid.uuid4().hex)
-        if link.exists() and not link.is_symlink():
-            raise ValueError('current must be a managed symlink')
-        pending.symlink_to('packages/' + rid)
-        os.replace(pending, link)
-        return rid
+    @contextlib.contextmanager
+    def release_lock(self):
+        if getattr(self, '_release_lock_depth', 0):
+            self._release_lock_depth += 1
+            try:
+                yield
+            finally:
+                self._release_lock_depth -= 1
+            return
+        with (self.home / 'activation.lock').open('a') as lock:
+            fcntl.flock(lock.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+            self._release_lock_depth = 1
+            try:
+                yield
+            finally:
+                self._release_lock_depth = 0
 
-    def activate(self, rid, confirmation, reason, rollback=False):
+    def _create_deployment(self, rid, data):
+        # Never activate from the mutable prepared-package directory. Read verified blobs afresh.
+        generation = uuid.uuid4().hex
+        folder = self.home / 'deployments' / generation
+        folder.mkdir(mode=0o700)
+        package = self.materialize(rid, folder / 'package')
+        self.validate_package(rid, package)
+        receipt = {'id': generation, 'release': rid, **data}
+        with (folder / 'receipt.json').open('x') as output:
+            output.write(canonical(receipt)); output.flush(); os.fsync(output.fileno())
+        (folder / 'receipt.json').chmod(0o400)
+        for path in package.rglob('*'):
+            if path.is_file() and not path.is_symlink():
+                with path.open('rb') as stream:
+                    os.fsync(stream.fileno())
+                path.chmod(0o500 if path.stat().st_mode & 0o111 else 0o400)
+        for path in sorted(package.rglob('*'), key=lambda p: len(p.parts), reverse=True):
+            if path.is_dir() and not path.is_symlink(): path.chmod(0o500)
+        package.chmod(0o500)
+        self._sync_directory(folder)
+        return receipt
+
+    @staticmethod
+    def _sync_directory(path):
+        descriptor = os.open(path, os.O_RDONLY)
+        try: os.fsync(descriptor)
+        finally: os.close(descriptor)
+
+    def _selection(self):
+        link = self.home / 'current'
+        if not os.path.lexists(link): return None
+        if not link.is_symlink(): raise ValueError('current must be a managed symlink')
+        target = link.resolve(strict=True)
+        try: relative = target.relative_to(self.home / 'deployments')
+        except ValueError:
+            # Old versions used packages/<release>. Migration is handled explicitly by reconciliation.
+            return {'legacy_target': str(target)}
+        if len(relative.parts) != 2 or relative.parts[1] != 'package':
+            raise ValueError('unrecognized active deployment')
+        generation = identifier(relative.parts[0])
+        receipt_path = self.home / 'deployments' / generation / 'receipt.json'
+        if receipt_path.is_symlink(): raise ValueError('linked deployment receipt refused')
+        receipt = json.loads(receipt_path.read_text())
+        if receipt.get('id') != generation: raise ValueError('deployment identity mismatch')
+        self.validate_package(receipt['release'], target)
+        return receipt
+
+    def _switch_pointer(self, generation):
+        temporary = self.home / ('.current-' + uuid.uuid4().hex)
+        temporary.symlink_to('deployments/' + generation + '/package')
+        try:
+            os.replace(temporary, self.home / 'current')  # The activation linearization point.
+            self._sync_directory(self.home)
+        finally:
+            if os.path.lexists(temporary): temporary.unlink()
+
+    def _finish_activation(self, receipt):
+        row = self.db.execute('SELECT data,status FROM activation_intents WHERE id=?', (receipt['id'],)).fetchone()
+        if not row or canonical(json.loads(row['data'])) != canonical(receipt):
+            raise ValueError('deployment does not match recorded activation intent')
+        if row['status'] == 'applied': return
+        if row['status'] != 'pending': raise ValueError('cancelled deployment cannot be activated')
+        with self.transaction():
+            self.db.execute('INSERT OR REPLACE INTO active VALUES (1,?)', (receipt['release'],))
+            self.db.execute('INSERT INTO activations(release,previous,reason) VALUES (?,?,?)',
+                            (receipt['release'], receipt['previous'], receipt['reason']))
+            self.db.execute("UPDATE activation_intents SET status='applied' WHERE id=?", (receipt['id'],))
+            self.event('rollback_recorded' if receipt['rollback'] else 'activation_recorded', receipt)
+
+    def reconcile_active(self):
+        with self.release_lock():
+            selection = self._selection()
+            if selection and 'legacy_target' not in selection:
+                self._finish_activation(selection)
+                # An unpublished intent did not take effect and must not be silently activated on restart.
+                with self.transaction():
+                    self.db.execute("UPDATE activation_intents SET status='cancelled' WHERE status='pending' AND id!=?", (selection['id'],))
+                return selection['release']
+            old = self.db.execute('SELECT release FROM active WHERE slot=1').fetchone()
+            if selection and (not old or Path(selection['legacy_target']) != self.home / 'packages' / old[0]):
+                raise ValueError('unrecognized legacy active pointer')
+            if old:
+                rows = self.db.execute("SELECT data FROM activation_intents WHERE status='applied' ORDER BY rowid DESC").fetchall()
+                receipt = next((json.loads(r[0]) for r in rows if json.loads(r[0])['release'] == old[0]), None)
+                if receipt:
+                    self.validate_package(old[0], self.home / 'deployments' / receipt['id'] / 'package')
+                    self._switch_pointer(receipt['id'])
+                else:
+                    # Safe one-time migration: preserve the exact old snapshot, with no new verification claim.
+                    self._activate(old[0], old[0], 'Migrate legacy active snapshot', False, False, {'kind': 'legacy-manual'})
+                with self.transaction():
+                    self.db.execute("UPDATE activation_intents SET status='cancelled' WHERE status='pending'")
+                return old[0]
+            with self.transaction():
+                self.db.execute("UPDATE activation_intents SET status='cancelled' WHERE status='pending'")
+            return None
+
+    def _activate(self, rid, confirmation, reason, rollback, verified, authority, revalidate=None):
+        if (verified or authority.get('kind', '').startswith('signed-')) and not callable(revalidate):
+            raise ValueError('signed releases require the trusted release gate')
         if confirmation != rid or not reason.strip():
             raise ValueError('operator confirmation must equal the full release ID and include a reason')
         if not self.db.execute('SELECT 1 FROM releases WHERE id=?', (rid,)).fetchone():
             raise ValueError('release not prepared')
         self.validate_package(rid, self.home / 'packages' / rid)
+        old = self._selection()
+        if old and 'legacy_target' in old:
+            previous_row = self.db.execute('SELECT release FROM active WHERE slot=1').fetchone()
+            previous = previous_row[0] if previous_row else None
+        else:
+            previous = old['release'] if old else None
+        if rollback and not self.db.execute('SELECT 1 FROM activations WHERE release=?', (rid,)).fetchone():
+            raise ValueError('rollback target was never active')
+        receipt = self._create_deployment(rid, {'previous': previous, 'reason': reason, 'rollback': rollback,
+                   'behavior_verified': verified, 'authorization': authority})
         with self.transaction():
-            old = self.db.execute('SELECT release FROM active WHERE slot=1').fetchone()
-            previous = old[0] if old else None
-            if rollback and not self.db.execute('SELECT 1 FROM activations WHERE release=?', (rid,)).fetchone():
-                raise ValueError('rollback target was never active')
-            self.db.execute('INSERT OR REPLACE INTO active VALUES (1,?)', (rid,))
-            self.db.execute('INSERT INTO activations(release,previous,reason) VALUES (?,?,?)', (rid, previous, reason))
-            self.event('rollback_recorded' if rollback else 'activation_recorded',
-                       {'release': rid, 'previous': previous, 'reason': reason,
-                        'authorization': 'explicit local operator adoption', 'behavior_verified': False})
-        # Database is authoritative. A crash here is repaired by the next status/run.
-        self.reconcile_active()
-        return {'active': rid, 'previous': previous, 'behavior_verified': False,
-                'memory_rollback': 'not performed; preserve newer project observations'}
+            if authority.get('grant_id'):
+                self.db.execute('INSERT INTO consumed_grants VALUES (?,?)', (authority['grant_id'], canonical(authority)))
+            self.db.execute('INSERT INTO activation_intents VALUES (?,?,?)', (receipt['id'], canonical(receipt), 'pending'))
+            self.event('activation_requested', receipt)
+        try:
+            if revalidate: revalidate()
+            self._switch_pointer(receipt['id'])
+        except BaseException:
+            # Rename may have succeeded before an interrupted directory flush. Inspect the commit point.
+            current = self._selection()
+            if not current or current.get('id') != receipt['id']:
+                with self.transaction():
+                    self.db.execute("UPDATE activation_intents SET status='cancelled' WHERE id=?", (receipt['id'],))
+                raise
+        try:
+            self._finish_activation(receipt)
+            state = 'applied'
+        except (OSError, sqlite3.Error):
+            state = 'applied_pending_history_recovery'
+        return {'active': rid, 'previous': previous, 'deployment': receipt['id'], 'state': state,
+                'behavior_verified': verified, 'memory_rollback': 'not performed; preserve newer project observations'}
+
+    def activate(self, rid, confirmation, reason, rollback=False):
+        with self.release_lock():
+            self.reconcile_active()
+            return self._activate(rid, confirmation, reason, rollback, False, {'kind': 'explicit-local-operator-adoption'})

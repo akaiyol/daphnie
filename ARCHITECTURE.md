@@ -1,6 +1,6 @@
 # Daphnie architecture
 
-Status: instruction package, offline reviewer and an explicit local controller for capture, development execution, comparison and manual adoption. Host-enforced isolation, autonomous scheduling, protected acceptance storage and verified promotion are not implemented. Installing skills does not start the controller.
+Status: instruction package, offline reviewer and an explicit local controller for capture, development execution, comparison, manual adoption and signed trial/promotion gates. Host-enforced isolation, autonomous scheduling, protected acceptance storage and production reviewer integration are not implemented. Installing skills does not start the controller.
 
 ## Ownership and boundaries
 
@@ -119,3 +119,11 @@ See [evaluation protocol](evaluation/PROTOCOL.md), [record contracts](evaluation
 The [Ultimate assessment](research/2026-11-05-ultimate-validation.md) records source verification, focused upstream tests, independent configuration probes and unresolved Daphnie transfer requirements. These mechanisms are engineering references, not active dependencies or validated Daphnie runtime features. Research and open-source attribution are maintained in the [README credits](README.md#credits-and-design-influences).
 
 The [local controller](evaluation/CONTROLLER.md) implements registered-root snapshots, scoped evidence bundles, separate candidates, frozen plans, fresh Codex attempts, deterministic artifact scoring and explicit release history. Content hashes detect accidental changes; the same OS account can alter the store. Manual adoption is labeled behavior-unverified and does not satisfy learned-release policy. The [benchmark design](evaluation/BENCHMARK_SYSTEM.md) retains the requirements for protected acceptance and verified promotion.
+
+## Experimental memory baseline
+
+The [scoped memory baseline](evaluation/MEMORY_BASELINE.md) implements one private flavour/project/owner store with Markdown notes, structured SQL records, bounded generated references, provenance, explicit corrections, expiry and all-revision forgetting within that store. The controller can freeze no-memory/scoped-context inputs while keeping the package snapshot constant. This does not add automatic retrieval to skill invocations, host-enforced isolation, agent-managed index updates or compatible memory rollback.
+
+## Policy-bound release implementation
+
+The controller implements signed acceptance, separate policy authorization, monitored trial promotion and signed failure rollback. Snapshot deployments use atomic pointer publication and recoverable database history. See [release policy](evaluation/RELEASE_POLICY.md) for authority boundaries and setup status, and [bounded verification](verification/skill_lifecycle/README.md) for checked properties. No production automation or independent evaluator is enabled by this implementation.

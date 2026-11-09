@@ -6,9 +6,13 @@ Keep a canonical checkout. Run `python3 scripts/check.py`, then `python3 scripts
 
 Invoke `$daphnie` to route a request, or use `$daphnie-design`, `$daphnie-think`, `$daphnie-assistant`, `$daphnie-research` directly. Core and operating guidance load once; only the selected mode is read. Goals, project state and memory are context, not personality. An existing `~/.codex/daphnie/INDEX.md` is opt-in private-store configuration; otherwise configure a private store before recording personal notes.
 
+[Maintenance guidance](MAINTENANCE.md) requires useful corrections to reach authorized file repairs or exact scoped skill candidates; recording a lesson alone is insufficient. Daphnie owns [task-driven update follow-through](SELF_UPDATE.md) within existing task budgets and a preapproved host policy. Behavioral promotion still requires evaluation and an authorized release.
+
+[Delegation](DELEGATION.md) is a separate owner-approved capability: Daphnie may select useful bounded workers within the existing task budget and remains accountable for their results. The contract does not supply a standalone dispatcher or enforced worker isolation.
+
 ## Architecture and learning
 
-High-level target architecture. The local controller implements explicit capture, development comparisons and manual adoption; enforced context isolation and verified promotion remain future work. Solid arrows show work and learning; dotted arrows show governance.
+High-level target architecture. The local controller implements explicit capture, development comparisons, manual adoption and signed trial/promotion gates. Enforced context isolation and production reviewer integration require a separate host. Solid arrows show work and learning; dotted arrows show governance.
 
 ```mermaid
 flowchart TB
@@ -16,7 +20,7 @@ flowchart TB
     Core[Shared values and judgment]
     Controls[Permissions, evaluation and release rules]
   end
-  subgraph Flavours[Separate personalities and versioned skill libraries]
+  subgraph Flavours[Protected flavour contracts and versioned skill libraries]
     A[Personal assistant]
     R[Researcher]
     D[Designer]
@@ -30,7 +34,7 @@ flowchart TB
   R --> Work
   D --> Work
   T --> Work
-  Work[Scoped task session<br/>Selected personality and project]
+  Work[Scoped task session<br/>Selected flavour and project]
   Memory[Private scoped memory] --> Work
   Work --> Evidence[Observed outcomes and corrections]
   subgraph Learning[Controlled learning]
@@ -60,13 +64,23 @@ The [architecture](ARCHITECTURE.md) defines personality/project separation, priv
 
 Run `python3 scripts/check.py` and `python3 -m unittest discover -s tests -p 'test_*.py'`. Review paired procedural outcomes with `python3 scripts/evaluate.py INPUT.json --output REPORT.json`, using private paths for actual evidence. The report checks supplied records; it does not run an agent or activate changes.
 
-The [local controller](evaluation/CONTROLLER.md) now records scoped observations and exact file snapshots, groups proposed evidence, creates separate candidate workspaces, runs paired development tasks, scores artifacts and preserves comparison history. Updates are fetched and imported explicitly; activation and rollback require an explicit operator decision. See the [target design and implementation boundary](evaluation/BENCHMARK_SYSTEM.md) and [validation record](research/2026-11-05-controller-validation.md).
+The [local controller](evaluation/CONTROLLER.md) now records scoped observations and exact file snapshots, groups proposed evidence, creates separate candidate workspaces, runs paired development tasks, scores artifacts and preserves comparison history. Updates are fetched and imported explicitly; manual adoption requires an explicit operator decision; signed releases and trial rollback can proceed under a separately approved host policy. See the [target design and implementation boundary](evaluation/BENCHMARK_SYSTEM.md) and [validation record](research/2026-11-05-controller-validation.md).
+
+## Experimental scoped memory
+
+The [files-and-SQL memory baseline](evaluation/MEMORY_BASELINE.md) adds explicit private stores, bounded indexes, corrections, expiry and deletion. A six-scenario comparison holds the skill package constant and varies supplied memory. It does not enable automatic memory use or autonomous updates.
+
+## Lifecycle model checking
+
+The [skill lifecycle verification](verification/skill_lifecycle/README.md) checks a finite TLA+ model, runs negative controls and replays concrete witnesses against disposable controller state. The race is resolved with snapshot deployments, and signed evaluation, trial and release gates are implemented. Bounded checks pass; production trust and live improvement remain unverified. See the [one-time release policy](evaluation/RELEASE_POLICY.md).
 
 ## Verification limits
 
-The package checker checks structure and library metadata. Synthetic unit tests check controller and offline evaluation decisions; neither establishes task quality, personality preservation or resistance to poisoning. [Behavior probes](tests/scenarios.md) require observed outcomes. Two live attempts passed one synthetic assistant task with no measured difference. This smoke test does not validate learning or improvement.
+Latest local verification (2026-11-08): the package checker, all 93 unit/integration tests and the bounded lifecycle harness passed.
 
-The controller is manually invoked. Ordinary Daphnie calls do not automatically log, benchmark, pull updates or activate changes. It provides no autonomous scheduler, enforced access isolation, protected acceptance store, verified promotion, model training, universal chat access or sleep/wake guarantee. Those require a separately configured host. Reading schedules require an explicit request and actual delivery verification.
+The package checker checks structure and library metadata. Synthetic unit tests check controller and offline evaluation decisions; neither establishes task quality, personality preservation or resistance to poisoning. [Behavior probes](tests/scenarios.md) require observed outcomes. The [eight-attempt lifecycle drill](research/2026-11-05-lifecycle-validation.md) completed across all four flavours with no measured quality difference. Results remain inconclusive; live improvement is unverified.
+
+The controller is invoked during authorized tasks. [Self-update guidance](SELF_UPDATE.md) assigns update follow-through to Daphnie within existing budgets; `advance-update` selects release phases when trusted evidence is supplied. Ordinary calls have no host-enforced trigger to log, benchmark, pull updates or activate changes. It provides no autonomous scheduler, enforced access isolation, protected acceptance store, production review service, model training, universal chat access or sleep/wake guarantee. Those require a separately configured host. Reading schedules require an explicit request and actual delivery verification.
 
 ## Credits and design influences
 
@@ -93,8 +107,17 @@ These works informed the later review of instruction files and executable harnes
 | [SWE-agent](https://arxiv.org/abs/2405.15793v3) — John Yang et al., 2024 | Tool interfaces, guardrails and feedback are part of agent capability, alongside instructions. |
 | [DSPy](https://arxiv.org/abs/2310.03714) — Omar Khattab et al., 2023 preprint; ICLR 2024 | Evaluate and optimize composed workflows rather than relying exclusively on manually accumulated prompts. |
 
+### Subsequent memory experiment
+
+[Millin Gabani’s proposal](https://x.com/trillhause_/status/2087746105509331132) motivated the files-and-SQL baseline with a bounded memory index. The post proposes an experiment; it does not establish effectiveness or an optimal budget. See the [experiment design](evaluation/MEMORY_BASELINE.md).
+
+### Subsequent delegation and evaluation review
+
+[Addy Osmani](https://x.com/addyosmani/status/2119332146485891501) and [Sergii Makarevych](https://x.com/sermakarevich/status/2106453816757354947) informed the later review of coordination ownership and evaluator validity. The [source review](research/2026-11-08-delegation-and-evaluation-research.md) credits the independent agent-scaling, MAST and GAUGE papers, records their limitations, and excludes a withdrawn citation. These sources do not retroactively establish the earlier design or demonstrate Daphnie’s performance.
+
 ### Open-source engineering references
 
+- [pstack](https://github.com/cursor/plugins/tree/6b0300214a09fd6029cfb7077043125758cd1fd2/pstack), by poteto and contributors: the later [Laziness Protocol](https://github.com/cursor/plugins/blob/6b0300214a09fd6029cfb7077043125758cd1fd2/pstack/skills/principle-laziness-protocol/SKILL.md), [Subtract Before You Add](https://github.com/cursor/plugins/blob/6b0300214a09fd6029cfb7077043125758cd1fd2/pstack/skills/principle-subtract-before-you-add/SKILL.md) and [Encode Lessons in Structure](https://github.com/cursor/plugins/blob/6b0300214a09fd6029cfb7077043125758cd1fd2/pstack/skills/principle-encode-lessons-in-structure/SKILL.md) informed scoped operating refinements and executable repairs. See [adoption and mandate check](learning/journal/2026-11-08-minimal-effective-changes.md). Daphnie's existing core principles predate this adoption; no pstack runtime is installed.
 - [Ultimate](https://github.com/HazAT/ultimate), by Daniel Griesser (HazAT) and contributors: subsequent runtime reference for executable agent configurations, traceable context, durable execution, evidence-linked reflection and checked releases. Reviewed revision: [`29f3db4`](https://github.com/HazAT/ultimate/tree/29f3db4e76d888d305ab8ce33fd7f1db793c9d1a). See the [verification and adoption assessment](research/2026-11-05-ultimate-validation.md) for tested mechanisms, limitations and Daphnie-specific acceptance requirements.
 - [Pi / Pi Durable](https://github.com/earendil-works/pi/tree/main/packages/durable), by the Earendil Works contributors: the upstream durable execution framework on which Ultimate builds. This is upstream credit, not a Daphnie dependency or a claim of an independent framework audit.
 - [SkillsBench implementation](https://github.com/benchflow-ai/skillsbench), [SWE-agent implementation](https://github.com/SWE-agent/SWE-agent), and [DSPy implementation](https://github.com/stanfordnlp/dspy): companion engineering references for the research above; not integrated dependencies.

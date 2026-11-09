@@ -1,6 +1,6 @@
 # Local controller operations
 
-Status: functional, manually operated development controller. Python 3.9+ and SQLite are sufficient for local operations. Live attempts additionally require an installed, signed-in Codex CLI available as `codex` on PATH. No dependency, scheduler or model is installed automatically.
+Status: functional, manually operated development controller. Python 3.9+ and SQLite support local operations; signed release verification additionally requires OpenSSL with Ed25519 support. Live attempts additionally require an installed, signed-in Codex CLI available as `codex` on PATH. No dependency, scheduler or model is installed automatically.
 
 ## What happens when you call Daphnie
 
@@ -65,7 +65,7 @@ python3 scripts/daphnie.py --state PRIVATE_STATE activate RELEASE_ID --confirm-r
 python3 scripts/install.py --release-state PRIVATE_STATE --destination SKILLS_DIRECTORY
 ```
 
-Prepared packages are content-addressed and checked against their snapshots and required package layout. Activation updates the ledger and stable `current` pointer. The installer refuses unknown existing entries, including links to the editable checkout. Inspect and deliberately migrate those links if opting in; this implementation does not replace them. Existing installations remain attached to their checkout until migrated. Active package files must be treated as read-only; hash checks detect mutation but the same account can still edit them. Skills in an already-running chat are not guaranteed to reload; use a fresh chat after changing the active release.
+Prepared packages are content-addressed and checked against their snapshots and required package layout. Activation copies verified snapshot blobs to a fresh read-only deployment. Atomic replacement of the stable `current` pointer commits the selection; SQLite history is a recoverable projection. The installer refuses unknown existing entries, including links to the editable checkout. Inspect and deliberately migrate those links if opting in; this implementation does not replace them. Existing installations remain attached to their checkout until migrated. Active package files must be treated as read-only; hash checks detect mutation but the same account can still edit them. Skills in an already-running chat are not guaranteed to reload; use a fresh chat after changing the active release.
 
 ```sh
 python3 scripts/daphnie.py --state PRIVATE_STATE rollback PREVIOUS_RELEASE_ID --confirm-release PREVIOUS_RELEASE_ID --reason 'Owner rollback' --owner-adopt-unverified
@@ -74,8 +74,14 @@ python3 scripts/daphnie.py --state PRIVATE_STATE verify
 python3 scripts/daphnie.py --state PRIVATE_STATE status
 ```
 
-Rollback accepts a previously active package and preserves newer observations. Compatible private-memory rollback is not implemented. Recovery marks unfinished attempts interrupted and reconciles the active pointer from committed state; it does not repeat actions. Manual adoption records `behavior_verified: false`, requires explicit full-ID confirmation and reason, and never claims compliance with the verified-release protocol. The CLI is not an independently authenticated approval service.
+Rollback accepts a previously active package and preserves newer observations. Compatible private-memory rollback is not implemented. Recovery marks unfinished attempts interrupted and repairs history from the published selection and restores a missing pointer from the last applied deployment; it does not repeat actions. Manual adoption records `behavior_verified: false`, requires explicit full-ID confirmation and reason, and never claims compliance with the verified-release protocol. The CLI is not an independently authenticated approval service.
 
 ## Validation and remaining work
 
-See the [validation record](../research/2026-11-05-controller-validation.md). Next required capabilities are protected acceptance and authority separation, independently calibrated flavour/privacy/poisoning checks, actual skill-use evidence, realistic multi-family tasks and monitored trials. Background operation should be added only after those boundaries and an explicit operating schedule are defined.
+See the [initial validation record](../research/2026-11-05-controller-validation.md) and [whole-lifecycle validation](../research/2026-11-05-lifecycle-validation.md). The repeatable `tests/test_lifecycle.py` drives capture through rollback and recovery without model calls. Signed evidence, preauthorized grants, monitored-trial gates and signed failure rollback are implemented; see [release policy and setup](RELEASE_POLICY.md). Protected production acceptance and authority separation, calibrated flavour/privacy/poisoning checks, actual skill-use evidence and realistic multi-family tasks remain deployment requirements. Background operation should be added only after those boundaries and an explicit operating schedule are defined.
+
+## Advance an update without choosing the phase
+
+`advance-update --bundle PRIVATE_SIGNED_BUNDLE` determines the next transition from the active snapshot and trusted evidence. It prepares the exact snapshots and starts an eligible trial, promotes a completed passing trial, restores the original baseline after signed failure, recognizes an already verified candidate, or records a deferral when evidence is incomplete. Missing authorization is a request to the configured host service, not a new per-release owner approval. Invalid signatures and identity mismatches remain errors. Evidence blobs and `update_decision` events are private and retained for resumption.
+
+The command launches no model attempts. Daphnie obtains review artifacts using only the active task’s remaining allowance under the [self-update workflow](../SELF_UPDATE.md). No scheduler or independent reviewer is installed.

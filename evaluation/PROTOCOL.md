@@ -4,7 +4,7 @@
 
 This protocol governs proposed learning. `scripts/evaluate.py` reviews paired outcome records and produces an offline eligibility report; it does not invoke a model, verify the truth of submitted scores, grant authorization or activate a release. `tests/test_evaluate.py` checks the review logic with synthetic records. No live learning, personality preservation or host isolation has yet been demonstrated.
 
-The [local controller](CONTROLLER.md) implements capture, development execution, artifact scoring and version history. Its reports always block verified release because protected acceptance, evaluator calibration, flavour fidelity, general privacy and actual skill loading are unresolved. Its explicit owner-adoption command is a behavior-unverified operational action, not a learned release under this protocol. The [target benchmark design](BENCHMARK_SYSTEM.md) remains the full requirement.
+The [local controller](CONTROLLER.md) implements capture, development execution, artifact scoring and version history. Its development reports always block verified release because protected acceptance, evaluator calibration, flavour fidelity, general privacy and actual skill loading are unresolved. Its explicit owner-adoption command is a behavior-unverified operational action, not a learned release under this protocol. The [target benchmark design](BENCHMARK_SYSTEM.md) remains the full requirement.
 
 ## Before evaluation
 
@@ -45,6 +45,10 @@ Critical permission/privacy violations block promotion regardless of average qua
 
 The offline reviewer averages repeats within task families, then gives each family equal weight. It uses a deterministic family bootstrap for a 95% interval over paired quality changes. Its interval describes the submitted sample, not unseen domains; small or unrepresentative samples remain weak evidence. The configured minimum family count and benefit threshold must be justified before evaluation. It separately checks each regression family, cost ratios and required checks. It supports procedural skill/retrieval comparisons only; use evidence review for knowledge/preferences.
 
+## Worker and judge evidence
+
+A worker submission is not an accepted task outcome. Verify the actual artifact or resulting system state and retain failures, timeouts and corrections. Assess both end-to-end task quality and evaluator errors; worker agreement or repeatable judge verdicts alone do not establish correctness. Calibrate false approvals and false rejections against appropriate reference outcomes, inspect order/model sensitivity where relevant, and justify tolerances for the decision rather than importing a universal agreement cutoff. For repeated task trials, report observed consistency alongside average outcomes without treating repeats as independent families. These clarify existing evidence and calibration requirements; no release threshold is changed. See the [delegation contract](../DELEGATION.md) and [source review](../research/2026-11-08-delegation-and-evaluation-research.md).
+
 ## Controlled release and recovery
 
 An eligible candidate still needs authorized activation and a limited trial. Freeze a report and release record naming the exact candidate, target library, versions, evidence, approver, scope, prior state and trial stopping conditions. Limit rollout to that scope; do not modify other libraries implicitly. Shared changes require all-flavour regression evidence.
@@ -52,3 +56,7 @@ An eligible candidate still needs authorized activation and a limited trial. Fre
 Monitor later task outcomes, recurrence, drift, new failures, resources and interventions. Revert on critical violations or predefined trial failure. Restore the prior skills, retrieval configuration and compatible memory snapshot; reverting files alone may leave learned effects behind. Test recovery in isolation before relying on it.
 
 The implementation milestone is an observed end-to-end cycle on a narrow real task family, followed by held-out transfer, adverse-memory checks, evaluator calibration, limited trial and demonstrated rollback. Individual passes do not establish reliability across years or interacting updates.
+
+## Control-layer verification
+
+The [TLA+ lifecycle checks](../verification/skill_lifecycle/README.md) examine bounded control invariants and progress witnesses. They complement behavioral comparisons; they do not establish task quality, evaluator calibration, host authorization or a verified learned release. The prepared-cache race is resolved and a signed release path is implemented under the [release policy](RELEASE_POLICY.md). Production acceptance and independent host authority still require configuration. Manual unverified adoption is a different operation and must retain that label.

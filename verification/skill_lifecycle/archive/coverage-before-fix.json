@@ -1,0 +1,28 @@
+{
+  "reviewed": "2026-11-08",
+  "sync_commit": null,
+  "provenance": "This working directory has no Git checkout; precise covered-function fingerprints identify the reviewed source. Do not invent a commit pin.",
+  "functions": {
+    "scripts/control/store.py:Store.transaction": "41d68a37cb962349e7121b1028ba32e625c124182d8b0b376a8642b7bc7d6f9b",
+    "scripts/control/store.py:Store.prepare_release": "b7f4711b1dcb5b0d67689fc622c2314eeced9f795390005cca642fdbc3955956",
+    "scripts/control/store.py:Store.validate_package": "09b3d12dc8ecc4de5e98673c2ebf2a87ad19d3e122cb9230ffea94a9af9d2c52",
+    "scripts/control/store.py:Store.activate": "4c7dc66903780fdf4982f8ba61414dce8e8091fb27376833df9c910889e12f72",
+    "scripts/control/store.py:Store.reconcile_active": "bfb40f750890735f5646c1cdebe4a37cc0d95479735d97cfcefd584a1b0af23b",
+    "scripts/control/bench.py:summarize": "b52953bb8a28d23ddfd9af26d1d2a7c66d2d5d4c2d7fcff6ec5d011d73ef4d90",
+    "scripts/evaluate.py:review": "79e2bf64dea80beb31640f2c589a84f88ad003c7029c0922f4beed22ab4c0a67",
+    "scripts/control/cli.py:parser": "0520ae784e0a07b08fa7430c5c3e2412a090b0e7733796807059fa5e6ec67d81",
+    "scripts/control/cli.py:main": "fdb2a1841a6ada51024a23c51b931094182e9c0e90ed15ee87e1850c3608f155"
+  },
+  "mapping": {
+    "Prepare": "Store.prepare_release validates/materializes snapshot and transactionally records prepared release",
+    "BeginAdoption": "Store.activate confirmation/existence/content checks BEFORE its DB transaction",
+    "CommitAdoption": "Store.activate transaction, including rollback-history check; no second content check before commit",
+    "Reconcile": "Store.reconcile_active validates active package and atomically replaces pointer AFTER commit",
+    "Crash": "Interruption before DB transaction or after committed active/history but before pointer reconciliation",
+    "ChangePackage": "External direct write to managed package; no controller OS protection exists",
+    "DevelopmentReport": "bench.summarize always labels development release eligibility blocked",
+    "OfflineEligibility": "evaluate.review may return eligible_for_trial for supplied scores; no activation edge",
+    "NeverMislabelVerified": "Store.activate event/return behavior_verified is false; a local operator confirmation is not independently authenticated approval",
+    "Transaction atomicity": "Store.transaction: BEGIN IMMEDIATE, commit on success, rollback on exceptions"
+  }
+}

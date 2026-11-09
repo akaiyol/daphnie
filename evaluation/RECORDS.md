@@ -34,3 +34,15 @@ Required fields: release ID/date, candidate and exact diff/hash, target library 
 ## Local controller records
 
 The [controller](CONTROLLER.md) stores hash-linked events, content-addressed manifests, scoped observations/bundles, candidate workspaces, frozen development plans, attempts, immutable comparisons and manual activation history in a private SQLite store. These are development records; they do not fulfill the protected acceptance and externally authorized release contracts above. A manual adoption is explicitly `behavior_verified: false`. Process interruption leaves an incomplete attempt; recovery never replays external actions.
+
+## Experimental memory records
+
+The [memory baseline](MEMORY_BASELINE.md) fixes one flavour/project/owner per store and denies implicit transfer. Records carry key, kind, title, source/date, attribution, creation/expiry, status, revision and superseded ID; each body is text or structured JSON. A correction removes the old revision from retrieval; forgetting removes every revision’s content and descriptive metadata from the current store. Earlier exports, immutable benchmark inputs, backups and model contexts are outside that deletion boundary. These records do not activate skills or meet the full retention/rollback contract above.
+
+## Signed release envelopes
+
+Release bundles contain `evaluation`, `authorization` and, for promotion, `trial` envelopes. Each envelope has exactly `signed`, `keyid`, and base64 `signature`. Signatures cover canonical UTF-8 JSON using sorted keys, compact separators and no nonfinite numbers. Key IDs are SHA-256 hashes of Ed25519 public-key DER. Evaluation binds exact snapshots, frozen policy, protected-suite/configuration/artifact hashes and a recomputable report. Authorization binds the policy digest, active baseline, evidence digest, phase, expiry and one-use grant ID. Promotion additionally binds the completed trial digest. Trial records bind the selected trial ID, actual interval, check results and observation count. See `scripts/control/release.py` for exact validation. Signed envelopes are private records; a signature authenticates an issuer, not the truth of its judgments.
+
+## Automatic update decision
+
+Private `update_decision` events record baseline, candidate, flavour, decision, reason and the content-addressed blob of the exact submitted signed bundle. Successful transition records include the returned release receipt. `model_attempts_started: 0` describes this decision command only, not upstream evaluation cost. Invalid attestations raise errors; they are not recorded as eligible or promoted. Task/model budgets remain the host’s responsibility.

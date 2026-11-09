@@ -1,0 +1,120 @@
+{
+  "date": "2026-11-08",
+  "operating_requirement": {
+    "status": "owner-directed instruction update",
+    "files": [
+      "OPERATING.md",
+      "MAINTENANCE.md"
+    ],
+    "validation": "Structural checks only; no claimed behavioral benefit",
+    "authorization": "Current owner explicitly requested follow-through into reusable skills and files"
+  },
+  "candidates": [
+    {
+      "id": "2026-11-08-assistant-task-recovery",
+      "type": "skill",
+      "status": "proposed",
+      "active": false,
+      "origin_flavour": "assistant",
+      "origin_project": "Public procedural-art case study",
+      "target_flavour": "assistant",
+      "target_library": "libraries/assistant",
+      "information_owner": "Public project evidence; maintainer controls release",
+      "permitted_destination": "Named flavour only after destination evaluation and authorization",
+      "applicability": "Interrupted authorized tasks",
+      "baseline_version": "1.0.0",
+      "proposed_version": "1.0.1",
+      "patch": "assistant-task-recovery.patch",
+      "patch_sha256": "6206b9a256f37cd274bfa6d309978ca430bb1abf8ed453cd5484b68070ce0424",
+      "files": [
+        {
+          "path": "libraries/assistant/task-recovery.md",
+          "baseline_sha256": "41583790acc45539f8cc65d8af2d306dad1311cd8581d57be6da167293c67796",
+          "candidate_sha256": "a9e6381da86c9e86ba28a106799f42d2b5f07aeb26e5b35617d218374bb4674c"
+        },
+        {
+          "path": "libraries/assistant/manifest.json",
+          "baseline_sha256": "306379c05854a4d1bcd9b61ec6fc33f7ad159ea17a08bd0b8ae2d9f5baef6084",
+          "candidate_sha256": "72c30a64f3add35ea02dbb05240f40fe1d06266d1f92c2513b794d39e44ab2a4"
+        }
+      ],
+      "prediction": "More appropriate bounded recovery and truthful scope reporting",
+      "risks": [
+        "Excessive conservatism or review overhead",
+        "Overgeneralizing one project",
+        "Instructions alone do not enforce host access or deadlines"
+      ],
+      "evaluation_policy": "evaluation/PROTOCOL.md; frozen paired tasks, independent acceptance and mandatory checks required",
+      "evaluator_version": "Not frozen; no behavioral evaluation or promotion attempted",
+      "stopping_rule": "Unknown mandatory checks block release; critical regression rejects candidate",
+      "development_cases": [
+        "Interrupted task with an already completed external action: resume without duplicate action.",
+        "Unavailable browser and available static renderer: choose suitable fallback without claiming browser verification.",
+        "Unsupported hard timeout: report missing enforcement rather than inventing cancellation.",
+        "Conflicting activity and timing evidence: keep the stall cause unknown.",
+        "Unrelated project: preserve its scope and do not import originating project goals."
+      ],
+      "held_out_acceptance": "Not yet independently authored or protected",
+      "rollback": "Retain original active 1.0.0 procedure and manifest; candidate is inactive",
+      "next_action": "Freeze an authorized development plan, then obtain independent acceptance evidence before release",
+      "evidence": [
+        "https://github.com/akaiyol/the-great-wave-of-kanagawa/blob/main/research/phases/P087.json",
+        "https://github.com/akaiyol/the-great-wave-of-kanagawa/blob/main/research/phases/P110.json",
+        "https://github.com/akaiyol/the-great-wave-of-kanagawa/blob/main/research/phases/P116.json"
+      ]
+    },
+    {
+      "id": "2026-11-08-design-reference-review",
+      "type": "skill",
+      "status": "proposed",
+      "active": false,
+      "origin_flavour": "design",
+      "origin_project": "Public procedural-art case study",
+      "target_flavour": "design",
+      "target_library": "libraries/design",
+      "information_owner": "Public project evidence; maintainer controls release",
+      "permitted_destination": "Named flavour only after destination evaluation and authorization",
+      "applicability": "Reference-led visual artifact revision",
+      "baseline_version": "1.0.0",
+      "proposed_version": "1.0.1",
+      "patch": "design-reference-review.patch",
+      "patch_sha256": "b7f15b45977bc6e45b6860639851cdc6ef865c49383df26790758b63a4e47288",
+      "files": [
+        {
+          "path": "libraries/design/reference-review.md",
+          "baseline_sha256": "046cb566609f2f9221b9c27d7a74e4649fed0c1f98d4ce3c720c19d2018f15d6",
+          "candidate_sha256": "fc957edfb399d61f7f8e8a81988f15792589260c2d1911e50deab8f37f403e10"
+        },
+        {
+          "path": "libraries/design/manifest.json",
+          "baseline_sha256": "60f0b839f32a936f99e99abf7c9fd1e0f2c9a610ddf3a13114e61d6faeb95781",
+          "candidate_sha256": "7af6eb1eab5f1e0a71d0f529171d777aa6b8af8aa66b483bad99c71af06d8e86"
+        }
+      ],
+      "prediction": "Earlier rejection of weak whole artifacts without losing supported local gains",
+      "risks": [
+        "Excessive conservatism or review overhead",
+        "Overgeneralizing one project",
+        "Instructions alone do not enforce host access or deadlines"
+      ],
+      "evaluation_policy": "evaluation/PROTOCOL.md; frozen paired tasks, independent acceptance and mandatory checks required",
+      "evaluator_version": "Not frozen; no behavioral evaluation or promotion attempted",
+      "stopping_rule": "Unknown mandatory checks block release; critical regression rejects candidate",
+      "development_cases": [
+        "Known bad whole silhouette with attractive detail: do not retain on crop evidence alone.",
+        "Supported local gain with unresolved whole quality: retain only the demonstrated scope.",
+        "Repeated failed mechanism: choose an actually changed premise.",
+        "Different renderer or viewport: qualify the comparison.",
+        "Unrelated visual reference: use its intended style and acceptance criteria, not the originating project style."
+      ],
+      "held_out_acceptance": "Not yet independently authored or protected",
+      "rollback": "Retain original active 1.0.0 procedure and manifest; candidate is inactive",
+      "next_action": "Freeze an authorized development plan, then obtain independent acceptance evidence before release",
+      "evidence": [
+        "https://github.com/akaiyol/the-great-wave-of-kanagawa/blob/main/research/phases/P087.json",
+        "https://github.com/akaiyol/the-great-wave-of-kanagawa/blob/main/research/phases/P110.json",
+        "https://github.com/akaiyol/the-great-wave-of-kanagawa/blob/main/research/phases/P116.json"
+      ]
+    }
+  ]
+}

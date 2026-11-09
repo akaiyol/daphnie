@@ -193,7 +193,9 @@ class ControllerTests(unittest.TestCase):
         rid2 = self.store.prepare_release(self.candidate())['release']
         self.store.activate(rid2, rid2, 'Second manual fixture')
         self.assertEqual((destination / 'daphnie-assistant/SKILL.md').read_text(), 'Use this test profile.')
-        self.assertEqual((destination / 'daphnie-assistant').resolve().parents[1], self.store.home / 'packages' / rid2)
+        self.assertEqual((destination / 'daphnie-assistant').resolve().parents[1], (self.store.home / 'current').resolve())
+        self.assertEqual(self.store._selection()['release'], rid2)
+        self.assertFalse((self.store.home / 'current/CORE.md').stat().st_mode & 0o222)
         (destination / 'daphnie').unlink()
         (destination / 'daphnie').mkdir()
         result = subprocess.run(args, capture_output=True, text=True)
@@ -267,6 +269,36 @@ class ControllerTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 run_plan(self.store, plan['id'])
         self.assertEqual(self.store.db.execute('SELECT count(*) FROM attempts').fetchone()[0], 0)
+
+    def test_memory_inputs_are_frozen_separately_from_package_and_reported(self):
+        scope = {'flavour': 'assistant', 'project': 'project', 'owner': 'user'}
+        envelope = {'scope': scope, 'authority': 'context_only', 'records': []}
+        tasks = suite(families=1)
+        inputs = {tasks['tasks'][0]['id']: {'baseline': envelope, 'candidate': envelope}}
+        plan = self.plan(tasks=tasks, memory_inputs=inputs)
+        inputs.clear()
+        report = run_plan(self.store, plan['id'])
+        self.assertIn('memory_inputs_sha256', report)
+        self.assertIn('controller-retrieved', report['comparison_variable'])
+        self.assertEqual(report['release_eligibility'], 'blocked')
+
+    def test_memory_input_scope_and_completeness_are_checked_before_run(self):
+        tasks = suite(families=1)
+        envelope = {'scope': {'flavour': 'research', 'project': 'project', 'owner': 'user'},
+                    'authority': 'context_only', 'records': []}
+        with self.assertRaises(ValueError): self.plan(tasks=tasks, memory_inputs={})
+        with self.assertRaises(ValueError):
+            self.plan(tasks=tasks, memory_inputs={tasks['tasks'][0]['id']: {'baseline': envelope, 'candidate': envelope}})
+
+    def test_mutated_memory_context_invalidates_attempt(self):
+        envelope = {'scope': {'flavour': 'assistant', 'project': 'project', 'owner': 'user'},
+                    'authority': 'context_only', 'records': []}
+        tasks = suite(families=1)
+        self.program.write_text('from pathlib import Path\nPath("memory-context.json").write_text("changed")\nprint(\'{"answer":1}\')\n')
+        plan = self.plan(tasks=tasks, memory_inputs={tasks['tasks'][0]['id']: {'baseline': envelope, 'candidate': envelope}})
+        report = run_plan(self.store, plan['id'])
+        self.assertFalse(report['complete'])
+        self.assertEqual(report['flavours']['assistant']['failures_or_incomplete'], 2)
 
     def test_compare_command_reads_existing_report_without_replacing_it(self):
         plan = self.plan()

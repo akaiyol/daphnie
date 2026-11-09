@@ -11,6 +11,8 @@ import sys
 
 from .store import Store, FLAVOURS, canonical
 from .bench import freeze_plan, run_plan, summarize
+from .release import ReleaseAuthority, apply_release, stop_trial
+from .update import advance_update
 
 
 def render_history(store):
@@ -94,6 +96,10 @@ def parser():
         release.add_argument('--reason', required=True)
         release.add_argument('--owner-adopt-unverified', action='store_true', required=True,
                              help='Manual owner adoption, explicitly NOT a verified learned release')
+    commands.add_parser('release-status')
+    for name in ('release-preview', 'start-trial', 'promote-release', 'stop-trial', 'advance-update'):
+        item = commands.add_parser(name)
+        item.add_argument('--bundle', type=Path, required=True, help='Signed evidence and policy-bound authorization; no private signing keys')
     commands.add_parser('verify')
     commands.add_parser('status')
     commands.add_parser('recover')
@@ -143,6 +149,29 @@ def main(argv=None):
             value = store.prepare_release(args.snapshot)
         elif action in ('activate', 'rollback'):
             value = store.activate(args.release, args.confirm_release, args.reason, action == 'rollback')
+        elif action == 'release-status':
+            active = store.reconcile_active()
+            try:
+                authority = ReleaseAuthority.from_host_policy()
+                policy = {'configured': True, 'id': authority.policy['id'], 'approval_mode': authority.policy['approval_mode']}
+            except ValueError as error:
+                policy = {'configured': False, 'next_action': str(error)}
+            selected = store._selection()
+            value = {'active': active, 'behavior_verified': selected.get('behavior_verified', False) if selected else False,
+                     'policy': policy, 'background_monitoring': False}
+        elif action in ('release-preview', 'start-trial', 'promote-release', 'stop-trial', 'advance-update'):
+            if args.bundle.stat().st_size > 2 * 1024 * 1024:
+                raise ValueError('release bundle exceeds supported size')
+            bundle = json.loads(args.bundle.read_text())
+            authority = ReleaseAuthority.from_host_policy()
+            if action == 'advance-update':
+                value = advance_update(store, bundle, authority)
+            elif action == 'release-preview':
+                value = apply_release(store, bundle, authority, bundle['authorization']['signed']['phase'], preview=True)
+            elif action == 'stop-trial':
+                value = stop_trial(store, bundle['trial'], authority)
+            else:
+                value = apply_release(store, bundle, authority, 'trial' if action == 'start-trial' else 'promote')
         elif action == 'verify':
             value = store.verify()
         elif action == 'status':

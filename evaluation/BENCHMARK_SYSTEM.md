@@ -177,3 +177,7 @@ The first useful deliverable is an end-to-end measured comparison with traceable
 ## Evidence and attribution
 
 This is a Daphnie-specific target design with a partial implementation, not a research-demonstrated combined system. The [existing evaluation protocol](PROTOCOL.md) remains the policy foundation. [Ultimate mechanism verification](../research/2026-11-05-ultimate-validation.md) informs durable execution, capability configuration, traceability and controlled release; its tests do not validate this design. [SQLite's transaction documentation](https://www.sqlite.org/transactional.html) supports the local ledger choice, not exactly-once external actions. [SkillsBench](https://arxiv.org/abs/2602.12670v4) motivates artifact-backed paired comparisons; [experience faithfulness research](https://arxiv.org/abs/2601.22436v3) motivates selective-use and adverse-memory tests. See [README credits](../README.md#credits-and-design-influences) for authors and broader influences.
+
+## Release implementation status — 2026-11-08
+
+The [policy-bound controller path](RELEASE_POLICY.md) now accepts independent signed acceptance, trial and authorization records and publishes sealed snapshots with recoverable history. Development comparisons remain ineligible on their own. No production signing authority, background observer, protected task suite or proof of improved behavior is supplied by this path.
