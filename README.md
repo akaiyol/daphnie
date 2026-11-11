@@ -6,6 +6,8 @@ Keep a canonical checkout. Run `python3 scripts/check.py`, then `python3 scripts
 
 Invoke `$daphnie` to route a request, or use `$daphnie-design`, `$daphnie-think`, `$daphnie-assistant`, `$daphnie-research` directly. Core and operating guidance load once; only the selected mode is read. Goals, project state and memory are context, not personality. An existing `~/.codex/daphnie/INDEX.md` is opt-in private-store configuration; otherwise configure a private store before recording personal notes.
 
+For alternating Mac/Windows use, follow the [cross-device setup](evaluation/CROSS_DEVICE.md). `scripts/handoff.py` shares private Markdown project memory through a separate private repository, pins the package commit and records the active device. Windows uses WSL2. This explicit handoff does not replicate Codex sessions, generated memory or controller databases; live Windows recall remains unverified.
+
 [Maintenance guidance](MAINTENANCE.md) requires useful corrections to reach authorized file repairs or exact scoped skill candidates; recording a lesson alone is insufficient. Daphnie owns [task-driven update follow-through](SELF_UPDATE.md) within existing task budgets and a preapproved host policy. Behavioral promotion still requires evaluation and an authorized release.
 
 [Delegation](DELEGATION.md) is a separate owner-approved capability: Daphnie may select useful bounded workers within the existing task budget and remains accountable for their results. The contract does not supply a standalone dispatcher or enforced worker isolation.
